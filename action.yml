@@ -1,0 +1,14 @@
+name: lint-commit
+description: Checks whether the commit messages follow the committing rules
+
+runs:
+  using: composite
+  steps:
+    - name: Lint commit messages
+      shell: bash
+      run: |
+        docker run --rm \
+          -v $(pwd):/app \
+          commitizen/commitizen:2 /bin/sh -c \
+          'git config --global --add safe.directory /app; \
+          cz check --rev-range origin/${{ github.event.pull_request.base.ref }}..'

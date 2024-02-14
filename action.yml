@@ -4,11 +4,19 @@ description: Checks whether the commit messages follow the committing rules
 runs:
   using: composite
   steps:
+    - name: Ensure config file exists
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+
+          const workspaceConfigPath = path.resolve('${{ github.workspace }}', 'commitlint.config.js');
+
+          if (!fs.existsSync(workspaceConfigPath)) {
+              const actionConfigPath = path.resolve('${{ github.action_path }}', 'commitlint.config.js');
+              fs.copyFileSync(actionConfigPath, workspaceConfigPath);
+          }
+
     - name: Lint commit messages
-      shell: bash
-      run: |
-        docker run --rm \
-          -v $(pwd):/app \
-          commitizen/commitizen:2 /bin/sh -c \
-          'git config --global --add safe.directory /app; \
-          cz check --rev-range origin/${{ github.event.pull_request.base.ref }}..'
+      uses: wagoid/commitlint-github-action@v5

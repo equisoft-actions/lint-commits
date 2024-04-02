@@ -11,10 +11,10 @@ runs:
           const fs = require('fs');
           const path = require('path');
 
-          const workspaceConfigPath = path.resolve('${{ github.workspace }}', 'commitlint.config.js');
+          const workspaceConfigPath = path.resolve('${{ github.workspace }}', 'commitlint.config.mjs');
 
           if (!fs.existsSync(workspaceConfigPath)) {
-              const actionConfigPath = path.resolve('${{ github.action_path }}', 'commitlint.config.js');
+              const actionConfigPath = path.resolve('${{ github.action_path }}', 'commitlint.config.mjs');
               fs.copyFileSync(actionConfigPath, workspaceConfigPath);
           }
 
